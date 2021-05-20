@@ -1,7 +1,8 @@
 import json
+import re
 
 import scrapy
-from crawler.items import MovieItem
+from crawler.items import DoubanMovieItem
 
 
 # 豆瓣电影 TOP250 爬虫
@@ -10,39 +11,18 @@ class MovieSpider(scrapy.Spider):
     allowed_domains = ['movie.douban.com']
     start_urls = ['https://movie.douban.com/top250']
 
+    def __init__(self, douban_id=None, *args, **kwargs):
+        super(eval(self.__class__.__name__), self).__init__(*args, **kwargs)
+        print('-' * 15 + ' [Douban Movie][' + douban_id + '] ' + '-' * 15)
+        self.start_urls = ['https://movie.douban.com/subject/%s/' % douban_id]
+
     def parse(self, response):
-        # 获取当前页面电影列表
-        # li_list = response.xpath('//div[@class="article"]//li')
-        # for li in li_list:
-        #     li_href = li.xpath('.//div[@class="hd"]//a/@href').extract_first()
-        #     if li_href is not None:
-        #         yield scrapy.Request(
-        #             li_href,
-        #             callback=self.parse_info
-        #         )
-        #
-        # # 进入下一页
-        # nxt_href = response.xpath('//span[@class="next"]/a/@href').extract_first()
-        # if nxt_href is not None:
-        #     yield scrapy.Request(
-        #         'https://movie.douban.com/top250' + nxt_href,
-        #         callback=self.parse
-        #     )
-
-        # 单条测试
-        yield scrapy.Request(
-            'https://movie.douban.com/subject/1292722/',
-            callback=self.parse_info
-        )
-
-
-    # 获取电影详细信息
-    def parse_info(self, response):
-        item = MovieItem()
+        item = DoubanMovieItem()
         data = json.loads(
             response.xpath('//script[@type="application/ld+json"]//text()').extract_first(),
             strict=False
         )
+        item['id'] = re.sub(r'\D', "", data['url'])
         item['name'] = data['name']
         item['image'] = data['image']
         item['url'] = 'https://movie.douban.com' + data['url']
@@ -58,9 +38,6 @@ class MovieSpider(scrapy.Spider):
         item['author'] = ', '.join(author_li)
         actor_li = [a['name'] for a in data['actor']]
         item['actor'] = ', '.join(actor_li)
-
-        item['id'] = '1292722'
-
 
         # json 中不包含的数据
         data_aug = response.xpath('//div[@id="info"]')
