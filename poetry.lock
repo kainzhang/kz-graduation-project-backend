@@ -137,6 +137,26 @@ sqlparse = "0.2.4"
 json = ["jsonfield (>=2.0.2)", "django-jsoneditor (>=0.0.12)"]
 
 [[package]]
+name = "fake-useragent"
+version = "0.1.11"
+description = "Up to date simple useragent faker with real world database"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "faker"
+version = "8.2.0"
+description = "Faker is a Python package that generates fake data for you."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+text-unidecode = "1.3"
+
+[[package]]
 name = "h2"
 version = "3.2.0"
 description = "HTTP/2 State-Machine based protocol implementation"
@@ -349,6 +369,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "python-dateutil"
+version = "2.8.1"
+description = "Extensions to the standard Python datetime module"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
 name = "pytz"
 version = "2021.1"
 description = "World timezone definitions, modern and historical"
@@ -405,6 +436,18 @@ python-versions = "*"
 six = "*"
 
 [[package]]
+name = "scrapy-fake-useragent"
+version = "1.4.4"
+description = "Use a random User-Agent provided by fake-useragent for every request"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+fake-useragent = "*"
+faker = "*"
+
+[[package]]
 name = "scrapyd"
 version = "1.2.1"
 description = "A service for running Scrapy spiders, with an HTTP API"
@@ -450,6 +493,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 name = "sqlparse"
 version = "0.2.4"
 description = "Non-validating SQL parser"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
+name = "text-unidecode"
+version = "1.3"
+description = "The most basic Text::Unidecode port"
 category = "main"
 optional = false
 python-versions = "*"
@@ -522,7 +573,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "c506407daa95f4185c85f67a0a53d7b1776a80b22aad4a104fa2eb9008d058b4"
+content-hash = "a6ffbead6a3f219d39f8a6acba71c36764e42b0e8e25b103793b73a585a34e49"
 
 [metadata.files]
 attrs = [
@@ -612,6 +663,13 @@ djangorestframework = [
 ]
 djongo = [
     {file = "djongo-1.3.4.tar.gz", hash = "sha256:b4b767174095c06eae2c344f201dc809ffc156b9c99d44ab8f798309090cae29"},
+]
+fake-useragent = [
+    {file = "fake-useragent-0.1.11.tar.gz", hash = "sha256:c104998b750eb097eefc28ae28e92d66397598d2cf41a31aa45d5559ef1adf35"},
+]
+faker = [
+    {file = "Faker-8.2.0-py3-none-any.whl", hash = "sha256:e4e2f2842b088b0be90b3d7f3ee846962b68550322348ddc9e26a828067c8426"},
+    {file = "Faker-8.2.0.tar.gz", hash = "sha256:6ced74cd3d87f39297c3688e8ef313ff58efa4504c932ae216d85b2a166aecfa"},
 ]
 h2 = [
     {file = "h2-3.2.0-py2.py3-none-any.whl", hash = "sha256:61e0f6601fa709f35cdb730863b4e5ec7ad449792add80d1410d4174ed139af5"},
@@ -819,6 +877,10 @@ pyopenssl = [
 pypydispatcher = [
     {file = "PyPyDispatcher-2.1.2.tar.gz", hash = "sha256:b6bec5dfcff9d2535bca2b23c80eae367b1ac250a645106948d315fcfa9130f2"},
 ]
+python-dateutil = [
+    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
+    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+]
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
     {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
@@ -835,6 +897,10 @@ scrapy-djangoitem = [
     {file = "scrapy-djangoitem-1.1.1.tar.gz", hash = "sha256:2c633ae1559f6e3d43c9a5ebb19aa5a64152deef434aa3fa57168e6b002d9c50"},
     {file = "scrapy_djangoitem-1.1.1-py2.py3-none-any.whl", hash = "sha256:58da093778f2cd92734b5539adcb60d59854475050d7511c42173bd8c104acef"},
 ]
+scrapy-fake-useragent = [
+    {file = "scrapy-fake-useragent-1.4.4.macosx-10.9-x86_64.tar.gz", hash = "sha256:3b17e982e646918dc25080da0672812d07bfb7a92a58377c014c74e0182c665e"},
+    {file = "scrapy_fake_useragent-1.4.4-py2.py3-none-any.whl", hash = "sha256:da0589d9245fe6348b491821f3be3387dd6563540146058e6b6c4f1bbe1358bf"},
+]
 scrapyd = [
     {file = "scrapyd-1.2.1-py2.py3-none-any.whl", hash = "sha256:7887b2b6d1d84291528cb65b6a2cce95d630e027c32330e72a5aa16710a6c3cb"},
     {file = "scrapyd-1.2.1.tar.gz", hash = "sha256:9afff46957794618daea93046bca58576d06c1a32b290134c051235971c32a9c"},
@@ -850,6 +916,10 @@ six = [
 sqlparse = [
     {file = "sqlparse-0.2.4-py2.py3-none-any.whl", hash = "sha256:d9cf190f51cbb26da0412247dfe4fb5f4098edb73db84e02f9fc21fdca31fed4"},
     {file = "sqlparse-0.2.4.tar.gz", hash = "sha256:ce028444cfab83be538752a2ffdb56bc417b7784ff35bb9a3062413717807dec"},
+]
+text-unidecode = [
+    {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
+    {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
 ]
 twisted = [
     {file = "Twisted-21.2.0-py3-none-any.whl", hash = "sha256:aab38085ea6cda5b378b519a0ec99986874921ee8881318626b0a3414bb2631e"},

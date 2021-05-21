@@ -14,6 +14,7 @@ django-cors-headers = "^3.7.0"
 Scrapy = "^2.5.0"
 scrapy-djangoitem = "^1.1.1"
 scrapyd = "^1.2.1"
+scrapy-fake-useragent = "^1.4.4"
 
 [tool.poetry.dev-dependencies]
 

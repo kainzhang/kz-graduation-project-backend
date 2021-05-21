@@ -61,4 +61,10 @@ class MovieSpider(scrapy.Spider):
         ).extract_first().split(' / ')
         item['alias'] = ', '.join(alias_li)
 
+        item['stars5'] = response.xpath('//span[@class="stars5 starstop"]/following::span/text()').extract_first()
+        item['stars4'] = response.xpath('//span[@class="stars4 starstop"]/following::span/text()').extract_first()
+        item['stars3'] = response.xpath('//span[@class="stars3 starstop"]/following::span/text()').extract_first()
+        item['stars2'] = response.xpath('//span[@class="stars2 starstop"]/following::span/text()').extract_first()
+        item['stars1'] = response.xpath('//span[@class="stars1 starstop"]/following::span/text()').extract_first()
+
         yield item

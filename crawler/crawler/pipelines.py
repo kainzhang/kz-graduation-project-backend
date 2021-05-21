@@ -12,6 +12,8 @@ class CrawlerPipeline:
             for key in item:
                 if isinstance(item[key], str) and item[key] == '':
                     item[key] = None
+        elif spider.name == 'douban-comment':
+            item['content'] = item['content'].replace('\n', '')
 
         item.save()
 

@@ -61,3 +61,7 @@ class DoubanBookItem(DjangoItem):
     # binding = scrapy.Field()
     # # 丛书
     # series = scrapy.Field()
+
+
+class DoubanCommentItem(DjangoItem):
+    django_model = douban_models.Comment

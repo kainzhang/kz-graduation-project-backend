@@ -8,7 +8,8 @@
 + django-cors-headers
 + djongo
 + scrapy
-+ scrapy-djangoitem
++ scrapy-djangoitem 
++ scrapy-fake-useragent
 + scrapyd
 
 **数据库：**
