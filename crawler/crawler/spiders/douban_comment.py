@@ -1,34 +1,69 @@
 import datetime
+import webbrowser
 
+import pydispatch.dispatcher
 import scrapy
 from crawler.items import DoubanCommentItem
+
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+
+from scrapy.utils.project import get_project_settings
+from scrapy import signals
 
 
 class DoubanCommentSpider(scrapy.Spider):
     name = 'douban-comment'
     allowed_domains = ['douban.com']
     start_urls = []
+
+    custom_settings = {
+        'DOWNLOADER_MIDDLEWARES': {
+            'crawler.middlewares.CrawlerDownloaderMiddleware': 400,
+            'crawler.middlewares.DoubanSeleniumMiddleware': 500,
+            'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+        },
+    }
+
     item_type = None
     item_dad = -1
-    root_url = 'https://movie.douban.com/subject/%s/comments'
+    root_url = None
     COMMENT_TYPE = {
         'Movie': 1,
         'Book': 2,
     }
 
     def __init__(self, douban_type=None, douban_id=None, *args, **kwargs):
-        super(eval(self.__class__.__name__), self).__init__(*args, **kwargs)
         self.item_type = douban_type
         self.item_dad = douban_id
-        if douban_type == 'Movie':
-            print('-' * 15 + ' [Douban Movie][' + douban_id + '][Comments] ' + '-' * 15)
-            self.start_urls = ['https://movie.douban.com/subject/%s/comments?start=460&limit=20&status=P&sort=new_score'
-                               % douban_id]
-        # elif douban_type == 'Book':
-        #     print('-' * 15 + ' [Douban Book][' + douban_id + '][Comments] ' + '-' * 15)
-        #     self.start_urls = ['https://book.douban.com/subject/%s/comments/' % douban_id]
 
-    def parse(self, response):
+        if self.item_type == 'Movie':
+            print('-' * 15 + ' [Douban Movie][' + self.item_dad + '][Comments] ' + '-' * 15)
+            self.root_url = 'https://movie.douban.com/subject/%s/comments' % self.item_dad
+            self.start_urls = ['https://movie.douban.com/subject/%s/comments'
+                               % self.item_dad]
+        elif self.item_type == 'Book':
+            print('-' * 15 + ' [Douban Book][' + self.item_dad + '][Comments] ' + '-' * 15)
+            self.root_url = 'https://book.douban.com/subject/%s/comments' % self.item_dad
+            self.start_urls = ['https://book.douban.com/subject/%s/comments' % self.item_dad]
+
+        my_settings = get_project_settings()
+        self.browser = webdriver.Chrome()
+        self.browser.set_window_size(my_settings['WINDOW_WIDTH'], my_settings['WINDOW_HEIGHT'])
+        self.browser.set_page_load_timeout(my_settings['SELENIUM_TIMEOUT'])
+        self.wait = WebDriverWait(self.browser, 30)  # 加载元素超时时间
+
+        super(eval(self.__class__.__name__), self).__init__(*args, **kwargs)
+        pydispatch.dispatcher.connect(
+            receiver=self.close_handle,
+            signal=signals.spider_closed
+        )
+
+    def close_handle(self, spider):
+        print('=' * 15 + 'Close Handle')
+        self.browser.quit()
+
+    def parse_content(self, response):
         comment_list = response.xpath('//div[@id="comments"]//div[@class="comment-item "]')
         for comment in comment_list:
             item = DoubanCommentItem()
@@ -47,12 +82,31 @@ class DoubanCommentSpider(scrapy.Spider):
             item['content'] = comment.xpath('.//p[@class=" comment-content"]/span/text()').extract_first()
             yield item
 
+        # 翻页
         nxt_href = response.xpath('//a[@class="next"]/@href').extract_first()
         if nxt_href is not None:
             print(nxt_href)
             yield scrapy.Request(
                 self.root_url + nxt_href,
-                callback=self.parse
+                meta={'useSelenium': False},
+                callback=self.parse_content,
             )
         else:
             print('GG')
+
+    def parse(self, response):
+        # 验证登录
+        login_sign = response.xpath('//a[@class="nav-login"]/text()').extract_first()
+        if login_sign is not None:  # 未登录
+            print('+' * 20 + '去登录了!')
+            yield scrapy.Request(
+                self.start_urls[0],
+                meta={'useSelenium': True},
+                callback=self.parse_content
+            )
+        else:
+            yield scrapy.Request(
+                self.start_urls[0],
+                meta={'useSelenium': False},
+                callback=self.parse_content
+            )

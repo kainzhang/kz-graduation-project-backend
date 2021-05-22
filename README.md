@@ -11,6 +11,7 @@
 + scrapy-djangoitem 
 + scrapy-fake-useragent
 + scrapyd
++ selenium
 
 **数据库：**
 + MongoDB
