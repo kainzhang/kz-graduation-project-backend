@@ -42,7 +42,7 @@ class MovieSpider(scrapy.Spider):
         # json 中不包含的数据
         data_aug = response.xpath('//div[@id="info"]')
 
-        item['imbd'] = data_aug.xpath(
+        item['imdb'] = data_aug.xpath(
             'normalize-space(./span[contains(./text(), "IMDb:")]/following::text()[1])'
         ).extract_first()
 

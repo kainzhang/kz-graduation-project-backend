@@ -11,7 +11,7 @@ class Movie(models.Model):
     url = models.CharField(max_length=200, null=True, blank=True)
     pub_date = models.CharField(max_length=50, null=True, blank=True)
     duration = models.CharField(max_length=25, null=True, blank=True)
-    imbd = models.CharField(max_length=20, null=True, blank=True)
+    imdb = models.CharField(max_length=20, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
     rating_val = models.CharField(max_length=5, null=True, blank=True)

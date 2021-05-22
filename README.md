@@ -16,7 +16,10 @@
 **数据库：**
 + MongoDB
 
-`运行项目前确保已运行 MongoDB Server`
+**注意：**
+1. 运行项目前确保已运行 `MongoDB Server`
+2. Python环境中已配置 `Chromedriver`
+3. 爬取豆瓣评论需要账号密码并完成手动登录
 
 ## 安装依赖
 安装 Poetry<br>

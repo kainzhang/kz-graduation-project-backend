@@ -2,22 +2,19 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+# useful for handling different item types with a single interface
 import json
 import time
 
 from scrapy import signals
 from scrapy.http import HtmlResponse
 
-# useful for handling different item types with a single interface
-from itemadapter import is_item, ItemAdapter
-
-
-# 使用 Selenium 实现手动豆瓣用户登录
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 
+# 使用 Selenium 实现手动豆瓣用户登录
 class DoubanSeleniumMiddleware:
     def process_request(self, request, spider):
         # 判断是否需要使用 Selenium
