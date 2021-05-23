@@ -1,15 +1,12 @@
 import datetime
-import webbrowser
 
 import pydispatch.dispatcher
 import scrapy
 from crawler.items import DoubanCommentItem
-
+from scrapy import signals
+from scrapy.utils.project import get_project_settings
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
-
-from scrapy.utils.project import get_project_settings
-from scrapy import signals
 
 
 class DoubanCommentSpider(scrapy.Spider):
@@ -29,20 +26,20 @@ class DoubanCommentSpider(scrapy.Spider):
     item_dad = -1
     root_url = None
     COMMENT_TYPE = {
-        'Movie': 1,
-        'Book': 2,
+        'movie': 1,
+        'book': 2,
     }
 
     def __init__(self, douban_type=None, douban_id=None, *args, **kwargs):
         self.item_type = douban_type
         self.item_dad = douban_id
 
-        if self.item_type == 'Movie':
+        if self.item_type == 'movie':
             print('-' * 15 + ' [Douban Movie][' + self.item_dad + '][Comments] ' + '-' * 15)
             self.root_url = 'https://movie.douban.com/subject/%s/comments' % self.item_dad
             self.start_urls = ['https://movie.douban.com/subject/%s/comments'
                                % self.item_dad]
-        elif self.item_type == 'Book':
+        elif self.item_type == 'book':
             print('-' * 15 + ' [Douban Book][' + self.item_dad + '][Comments] ' + '-' * 15)
             self.root_url = 'https://book.douban.com/subject/%s/comments' % self.item_dad
             self.start_urls = ['https://book.douban.com/subject/%s/comments' % self.item_dad]
@@ -64,26 +61,46 @@ class DoubanCommentSpider(scrapy.Spider):
         self.browser.quit()
 
     def parse_content(self, response):
-        comment_list = response.xpath('//div[@id="comments"]//div[@class="comment-item "]')
-        for comment in comment_list:
-            item = DoubanCommentItem()
-            item['id'] = comment.xpath('@data-cid').extract_first()
-            item['comment_type'] = self.COMMENT_TYPE[self.item_type]
-            item['dad_id'] = self.item_dad
-            item['author'] = comment.xpath('.//span[@class="comment-info"]/a/text()').extract_first()
-            item['author_url'] = comment.xpath('.//span[@class="comment-info"]/a/@href').extract_first()
-            item['rating_val'] = comment.xpath(
-                './/span[@class="comment-info"]/span[2]/@class'
-            ).extract_first()[7:9]
+        if self.item_type == 'movie':
+            comment_list = response.xpath('//div[@id="comments"]//div[@class="comment-item "]')
+            for comment in comment_list:
+                item = DoubanCommentItem()
+                item['id'] = comment.xpath('@data-cid').extract_first()
+                item['comment_type'] = self.COMMENT_TYPE[self.item_type]
+                item['dad_id'] = self.item_dad
+                item['author'] = comment.xpath('.//span[@class="comment-info"]/a/text()').extract_first()
+                item['author_url'] = comment.xpath('.//span[@class="comment-info"]/a/@href').extract_first()
 
-            pub_date_str = comment.xpath('.//span[@class="comment-time "]/@title').extract_first()
-            item['pub_date'] = datetime.datetime.strptime(pub_date_str, '%Y-%m-%d %H:%M:%S')
+                item['rating_val'] = comment.xpath(
+                    './/span[@class="comment-info"]/span[2]/@class'
+                ).extract_first()[7:9]
 
-            item['content'] = comment.xpath('.//p[@class=" comment-content"]/span/text()').extract_first()
-            yield item
+                pub_date_str = comment.xpath('.//span[@class="comment-time "]/@title').extract_first()
+                item['pub_date'] = datetime.datetime.strptime(pub_date_str, '%Y-%m-%d %H:%M:%S')
+                item['content'] = comment.xpath('.//p[@class=" comment-content"]/span/text()').extract_first()
+                yield item
+
+        elif self.item_type == 'book':
+            comment_list = response.xpath('//div[@id="comments"]//li[@class="comment-item"]')
+            for comment in comment_list:
+                item = DoubanCommentItem()
+                item['id'] = comment.xpath('@data-cid').extract_first()
+                item['comment_type'] = self.COMMENT_TYPE[self.item_type]
+                item['dad_id'] = self.item_dad
+                item['author'] = comment.xpath('.//span[@class="comment-info"]/a/text()').extract_first()
+                item['author_url'] = comment.xpath('.//span[@class="comment-info"]/a/@href').extract_first()
+
+                item['rating_val'] = comment.xpath(
+                    './/span[@class="comment-info"]/span[1]/@class'
+                ).extract_first()[18:20]
+
+                pub_date_str = comment.xpath('.//span[@class="comment-time"]/text()').extract_first()
+                item['pub_date'] = datetime.datetime.strptime(pub_date_str, '%Y-%m-%d')
+                item['content'] = comment.xpath('.//p[@class="comment-content"]/span/text()').extract_first()
+                yield item
 
         # 翻页
-        nxt_href = response.xpath('//a[@class="next"]/@href').extract_first()
+        nxt_href = response.xpath('//a[@data-page="next"]/@href').extract_first()
         if nxt_href is not None:
             print(nxt_href)
             yield scrapy.Request(

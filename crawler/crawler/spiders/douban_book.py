@@ -27,7 +27,7 @@ class DoubanBookSpider(scrapy.Spider):
         author_li = [a['name'] for a in data['author']]
         item['author'] = ', '.join(author_li)
 
-        item['url'] = data['url']
+        item['douban_url'] = data['url']
         item['isbn'] = data['isbn']
 
         # Json 中没有的信息

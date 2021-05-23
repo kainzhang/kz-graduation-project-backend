@@ -25,7 +25,7 @@ class MovieSpider(scrapy.Spider):
         item['id'] = re.sub(r'\D', "", data['url'])
         item['name'] = data['name']
         item['image'] = data['image']
-        item['url'] = 'https://movie.douban.com' + data['url']
+        item['douban_url'] = 'https://movie.douban.com' + data['url']
         item['pub_date'] = data['datePublished']
         genre_li = data['genre']
         item['genre'] = ', '.join(genre_li)

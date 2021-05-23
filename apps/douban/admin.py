@@ -5,12 +5,12 @@ from apps.douban.models import Movie, Book, Comment
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'director', 'genre', 'rating_val')
 
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name')
+    list_display = ('id', 'name', 'author', 'press', 'rating_val')
 
 
 @admin.register(Comment)

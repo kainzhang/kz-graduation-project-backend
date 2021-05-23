@@ -5,19 +5,29 @@ from apps.douban.models import Movie, Book, Comment
 
 
 # Serializers
-class MovieSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+        extra_kwargs = {
+            'create_date': {
+                'read_only': True,
+            }
+        }
 
 
-class BookSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Book
         fields = '__all__'
+        extra_kwargs = {
+            'create_date': {
+                'read_only': True,
+            }
+        }
 
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
@@ -25,15 +35,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
 # ViewSets
 class MovieViewSet(viewsets.ModelViewSet):
-    serializer_class = MovieSerializer
     queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
-    serializer_class = BookSerializer
     queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+    serializer_class = CommentSerializer

@@ -8,7 +8,7 @@ class Movie(models.Model):
     id = models.CharField(primary_key=True, max_length=20)  # 豆瓣id
     name = models.CharField(max_length=200, null=False, blank=False)
     image = models.CharField(max_length=200, null=True, blank=True)
-    url = models.CharField(max_length=200, null=True, blank=True)
+    douban_url = models.CharField(max_length=200, null=True, blank=True)
     pub_date = models.CharField(max_length=50, null=True, blank=True)
     duration = models.CharField(max_length=25, null=True, blank=True)
     imdb = models.CharField(max_length=20, null=True, blank=True)
@@ -41,7 +41,7 @@ class Book(models.Model):
     id = models.CharField(primary_key=True, max_length=20)  # 豆瓣id
     name = models.CharField(max_length=200, null=False, blank=False)
     image = models.CharField(max_length=200, null=True, blank=True)
-    url = models.CharField(max_length=200, null=True, blank=True)
+    douban_url = models.CharField(max_length=200, null=True, blank=True)
     pub_date = models.CharField(max_length=50, null=True, blank=True)
     isbn = models.CharField(max_length=20, null=True, blank=True)
     press = models.CharField(max_length=50, null=True, blank=True)
