@@ -1,9 +1,40 @@
-from django.db import models
+from datetime import datetime
 
 import django.utils.timezone as timezone
+from django.db import models
 
 
 # Create your models here.
+class ItemAnalysis(models.Model):
+    ITEM_TYPE = (
+        (1, 'movie'),
+        (2, 'book'),
+    )
+    dad_id = models.CharField(max_length=20, null=False, blank=False)
+    dad_type = models.IntegerField(choices=ITEM_TYPE, default=1)  # 分析对象的类型，区分电影、图书
+
+    # 除分析对象的 id 外，其余数据由系统自动生成
+    comment_num = models.IntegerField()  # 热评样本数量
+    pos_num = models.IntegerField()  # 正面评论数量
+    neg_num = models.IntegerField()  # 负面评论数量
+
+    # figures, 数据库存 json 转字符串
+    stars_data = models.TextField()  # 1-5 星评分情况，绘制柱形图
+    pos_neg_sum = models.TextField()  # 正负面评论总数，绘制柱形图（横向）
+    pos_neg_per_month = models.TextField()  # 各月份的正负面评论数量，绘制柱形图
+    pos_neg_sum_month = models.TextField()  # 正负面评论数量走势，绘制折线图
+    emotion_percent = models.TextField()  # 喜怒哀乐等情绪占比，饼状图
+
+    # 分析时间
+    create_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return '<Analysis: %s, date: %s>' % (
+            self.dad_id,
+            datetime.strftime(self.create_date, '%Y-%m-%d %H:%M:%S')
+        )
+
+
 class Movie(models.Model):
     id = models.CharField(primary_key=True, max_length=20)  # 豆瓣id
     name = models.CharField(max_length=200, null=False, blank=False)
@@ -73,8 +104,8 @@ class Book(models.Model):
 
 class Comment(models.Model):
     COMMENT_TYPE = (
-        (1, 'Movie'),
-        (2, 'Book'),
+        (1, 'movie'),
+        (2, 'book'),
     )
     id = models.CharField(primary_key=True, max_length=20)  # 豆瓣id
     comment_type = models.IntegerField(choices=COMMENT_TYPE, default=1)  # 评论类型，区分电影评论、图书评论等等

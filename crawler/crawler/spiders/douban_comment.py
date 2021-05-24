@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 import pydispatch.dispatcher
 import scrapy
@@ -76,7 +76,7 @@ class DoubanCommentSpider(scrapy.Spider):
                 ).extract_first()[7:9]
 
                 pub_date_str = comment.xpath('.//span[@class="comment-time "]/@title').extract_first()
-                item['pub_date'] = datetime.datetime.strptime(pub_date_str, '%Y-%m-%d %H:%M:%S')
+                item['pub_date'] = datetime.strptime(pub_date_str, '%Y-%m-%d %H:%M:%S')
                 item['content'] = comment.xpath('.//p[@class=" comment-content"]/span/text()').extract_first()
                 yield item
 
@@ -95,7 +95,7 @@ class DoubanCommentSpider(scrapy.Spider):
                 ).extract_first()[18:20]
 
                 pub_date_str = comment.xpath('.//span[@class="comment-time"]/text()').extract_first()
-                item['pub_date'] = datetime.datetime.strptime(pub_date_str, '%Y-%m-%d')
+                item['pub_date'] = datetime.strptime(pub_date_str, '%Y-%m-%d')
                 item['content'] = comment.xpath('.//p[@class="comment-content"]/span/text()').extract_first()
                 yield item
 

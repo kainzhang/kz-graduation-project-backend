@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from apps.douban.models import Movie, Book, Comment
+from apps.douban.models import Movie, Book, Comment, ItemAnalysis
+
+
+@admin.register(ItemAnalysis)
+class ItemAnalysisAdmin(admin.ModelAdmin):
+    list_display = ('id', 'dad_id', 'create_date')
 
 
 @admin.register(Movie)
