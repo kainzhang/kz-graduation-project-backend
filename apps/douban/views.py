@@ -25,18 +25,20 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
             1: 'movie',
             2: 'book'
         }
-        item = super().create(validated_data=validated_data)
+        item = ItemAnalysis.objects.create(**validated_data)
         item_type = ITEM_TYPE[item.dad_type]
-        print('*' * 20 + item_type)
-        print('*' * 20 + item.dad_id)
         if item_type == 'movie':
             movieitem = Movie.objects.get(id=item.dad_id)
-            item.comment_num = 100
-            item.neg_num = 91
-            item.pos_num = 9
-            item.emotion_percent = movieitem.actor
-            item.pos_neg_sum = movieitem.director
+            # item.comment_num = 100
+            # item.neg_num = 91
+            # item.pos_num = 9
+            # item.emotion_percent = movieitem.actor
+            # item.pos_neg_sum = movieitem.director
             item.save()
+        elif item_type == 'book':
+            pass
+
+        return item
 
 
 class MovieSerializer(serializers.HyperlinkedModelSerializer):
