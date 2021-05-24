@@ -20,6 +20,24 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
             'create_date': {'read_only': True}
         }
 
+    def create(self, validated_data):
+        ITEM_TYPE = {
+            1: 'movie',
+            2: 'book'
+        }
+        item = super().create(validated_data=validated_data)
+        item_type = ITEM_TYPE[item.dad_type]
+        print('*' * 20 + item_type)
+        print('*' * 20 + item.dad_id)
+        if item_type == 'movie':
+            movieitem = Movie.objects.get(id=item.dad_id)
+            item.comment_num = 100
+            item.neg_num = 91
+            item.pos_num = 9
+            item.emotion_percent = movieitem.actor
+            item.pos_neg_sum = movieitem.director
+            item.save()
+
 
 class MovieSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
