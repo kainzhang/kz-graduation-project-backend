@@ -111,7 +111,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         douban_id = re.sub(r'\D', "", validated_data['douban_url'])
-        item = Movie.objects.create(
+        item = Book.objects.create(
             id=douban_id,
             douban_url=validated_data['douban_url']
         )

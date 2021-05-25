@@ -23,7 +23,7 @@
 3. 爬取豆瓣评论需要账号密码并完成手动登录
 4. scrapy-deploy 文件的修改问题
 
-## 安装依赖
+## 🚀 安装依赖
 安装 Poetry：osx / linux / bashonwindows
 ```
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
@@ -43,8 +43,10 @@ python manage.py migrate
 python manage.py runserver
 ```
 douban api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
+
 user api: [http://localhost:8000/user/](http://localhost:8000/user/)
-Django Admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
+django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 
 创建超级用户
