@@ -1,7 +1,7 @@
 from rest_framework import serializers, viewsets
 
 from apps.douban.models import Movie, Book, Comment, ItemAnalysis
-
+import scrapyd
 
 # Serializers
 class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):

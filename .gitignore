@@ -1,0 +1,5 @@
+.idea
+crawler/logs/*
+crawler/twistd.pid
+venv
+.DS_Store

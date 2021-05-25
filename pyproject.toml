@@ -16,6 +16,8 @@ scrapy-djangoitem = "^1.1.1"
 scrapy-fake-useragent = "^1.4.4"
 scrapyd = "^1.2.1"
 selenium = "^3.141.0"
+requests = "^2.25.1"
+scrapyd-client = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 
