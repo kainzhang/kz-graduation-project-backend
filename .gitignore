@@ -1,5 +1,6 @@
 .idea
 crawler/logs/*
 crawler/twistd.pid
+crawler/dbs
 venv
 .DS_Store

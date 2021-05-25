@@ -8,10 +8,11 @@
 + django-cors-headers
 + djongo
 + scrapy
-+ scrapy-djangoitem 
-+ scrapy-fake-useragent
++ scrapy-djangoitem
 + scrapyd
++ scrapyd-client
 + selenium
++ requests
 
 **数据库：**
 + MongoDB
@@ -20,6 +21,7 @@
 1. 运行项目前确保已运行 `MongoDB Server`
 2. Python环境中已配置 `Chromedriver`
 3. 爬取豆瓣评论需要账号密码并完成手动登录
+4. scrapy-deploy 文件的修改问题
 
 ## 安装依赖
 安装 Poetry：osx / linux / bashonwindows
@@ -34,12 +36,16 @@ poetry install
 ## 运行流程
 
 ### Django 运行
-
+在项目根目录执行以下指令
 ```
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
 ```
+douban api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
+user api: [http://localhost:8000/user/](http://localhost:8000/user/)
+Django Admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
 
 创建超级用户
 ```
@@ -50,7 +56,7 @@ python manage.py createsuperuser
 
 进入根目录下的 `crawler` 文件夹
 
-爬取豆瓣电影个体和豆瓣读书的示例，参数为该作品的豆瓣 id
+终端命令爬取豆瓣电影个体和豆瓣读书的示例，参数为该作品的豆瓣 id
 ```
 # 爬取电影信息
 scrapy crawl douban-movie -a douban_id=1291561
@@ -58,6 +64,28 @@ scrapy crawl douban-movie -a douban_id=1291561
 # 爬取图书信息
 scrapy crawl douban-book -a douban_id=10554308
 ```
+
+可以在douban api 页面通过 douban_url 添加电影、图书，后台自动发请求爬取数据（数据显示有延迟，需手动刷新）
+
+### Scrapyd 运行
+由于`scrapy.utils.http` 已经不再使用，因此修改 scrapy-deploy
+```
+from scrapy.utils.project import inside_project
+from scrapy.utils.http import basic_auth_header
+from scrapy.utils.python import retry_on_eintr
+from scrapy.utils.conf import get_config, closest_scrapy_cfg
+```
+⬆️ 以上第二行修改为
+```
+from w3lib.http import basic_auth_header
+```
+修改完毕后在 crawler 目录下运行
+```
+scrapyd
+scrapyd-deploy -l
+```
+默认运行地址：[http://localhost:6800/
+](http://localhost:6800/)
 
 #### 🕷️ 豆瓣热门短评爬虫
 热门短评由于豆瓣官方限制，不登录账号最多爬 220 条，登录后最多爬 500 条，由于热度动态改变，可能爬不满 220 或 500，以豆瓣官方 id 作为主键，数据库不会出现重复数据<br>
