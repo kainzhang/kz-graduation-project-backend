@@ -24,7 +24,7 @@ class DoubanSeleniumMiddleware:
                 user = json.load(f)['douban']
             login_url = 'https://accounts.douban.com/passport/login'
             try:
-                print('%' * 10 + request.url)
+                print('-' * 20 + request.url)
                 spider.browser.get(login_url)
                 locator = (By.CLASS_NAME, 'account-tab-account')
                 WebDriverWait(spider.browser, 30).until(EC.presence_of_element_located(locator))

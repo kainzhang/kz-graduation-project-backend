@@ -4,15 +4,16 @@
 
 **主要依赖：**
 + django 2.2
-+ djangorestframework
++ django-filter
 + django-cors-headers
++ djangorestframework
 + djongo
++ requests
 + scrapy
 + scrapy-djangoitem
 + scrapyd
 + scrapyd-client
 + selenium
-+ requests
 
 **数据库：**
 + MongoDB
@@ -33,7 +34,7 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 poetry install 
 ```
 
-## 运行流程
+## 🏄 运行流程
 
 ### Django 运行
 在项目根目录执行以下指令
@@ -102,4 +103,11 @@ scrapy crawl douban-comment -a douban_type=movie -a douban_id=1292052
 
 # 豆瓣读书类型为 book，数据库存储数据为 2
 scrapy crawl douban-comment -a douban_type=book -a douban_id=6082808
+```
+
+## 🌳 Rest Framework
+
+评论精确查询，参数为豆瓣电影或图书的 ID，示例如下
+```
+http://127.0.0.1:8000/douban/commentlist/?dad_id=34418203
 ```
