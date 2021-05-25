@@ -34,6 +34,5 @@ class CommentList(generics.ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
-        queryset = Comment.objects.all()
         dad_id = self.request.query_params.get('dad_id', None)
-        return queryset.filter(dad_id__exact=dad_id)
+        return Comment.objects.filter(dad_id__exact=dad_id)
