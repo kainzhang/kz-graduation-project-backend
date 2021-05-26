@@ -13,6 +13,7 @@
 + scrapyd
 + scrapyd-client
 + selenium
++ snownlp
 
 **数据库：**
 + MongoDB
@@ -31,6 +32,11 @@ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poet
 进入项目根目录使用 Poetry 安装依赖
 ```
 poetry install 
+```
+使用 Poetry 安装 snownlp 和 pandas 太慢，直接用 pip
+```
+pip install snownlp
+pip install pandas
 ```
 
 ## 🏄 运行流程

@@ -5,6 +5,8 @@ from rest_framework import serializers
 from apps.douban.models import Movie, Book, Comment, ItemAnalysis
 from apps.douban.crawl import crawl_item
 
+from snownlp import SnowNLP
+
 
 class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -31,8 +33,11 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         item_type = ITEM_TYPE[item.dad_type]
         if item_type == 'movie':
             pass
+            # comments = Comment.objects.filter(dad_id__exact=item.dad_id)
+            # for comment in comments:
+            #     comment.senti_score = SnowNLP(comment.content).sentiments
+            #     comment.save()
             # movieitem = Movie.objects.get(id=item.dad_id)
-            # print(movieitem)
             # item.comment_num = 100
             # item.neg_num = 91
             # item.pos_num = 9

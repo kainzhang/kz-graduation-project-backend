@@ -6,6 +6,8 @@
 
 # useful for handling different item types with a single interface
 
+from snownlp import SnowNLP
+
 class CrawlerPipeline:
     def process_item(self, item, spider):
         if spider.name == 'douban-book':
@@ -14,6 +16,7 @@ class CrawlerPipeline:
                     item[key] = None
         elif spider.name == 'douban-comment':
             item['content'] = item['content'].replace('\n', '')
+            item['senti_score'] = SnowNLP(item['content']).sentiments
 
         item.save()
 
