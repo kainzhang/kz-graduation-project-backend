@@ -4,7 +4,6 @@
 
 **主要依赖：**
 + django 2.2
-+ django-filter
 + django-cors-headers
 + djangorestframework
 + djongo
@@ -20,12 +19,12 @@
 
 **注意：**
 1. 运行项目前确保已运行 `MongoDB Server`
-2. Python环境中已配置 `Chromedriver`
+2. Python环境的 bin 文件内添加 `Chromedriver`
 3. 爬取豆瓣评论需要账号密码并完成手动登录
 4. scrapy-deploy 文件的修改问题
 
 ## 🚀 安装依赖
-安装 Poetry：osx / linux / bashonwindows
+安装 Poetry：osx / linux / bashonwindows，详情查看 [Poetry Docs](https://python-poetry.org/docs/)
 ```
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 ```
@@ -42,18 +41,15 @@ poetry install
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
-```
-douban api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
 
-user api: [http://localhost:8000/user/](http://localhost:8000/user/)
-
-django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
-
-
-创建超级用户
-```
+# 创建超级用户
 python manage.py createsuperuser 
 ```
+
+**相关地址：**
++ douban api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
++ user api: [http://localhost:8000/user/](http://localhost:8000/user/)
++ django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 ### Scrapy 爬虫
 
@@ -107,7 +103,11 @@ scrapy crawl douban-comment -a douban_type=book -a douban_id=6082808
 
 ## 🌳 Rest Framework
 
-评论精确查询，参数为豆瓣电影或图书的 ID，示例如下
+评论查询，参数为评论对象的类型和评论对象的豆瓣 ID，示例如下
 ```
-http://127.0.0.1:8000/douban/commentlist/?dad_id=34418203
+http://127.0.0.1:8000/douban/comment_query/?douban_type=1&dad_id=34418203
+```
+分析结果查询，参数为分析对象类型和分析对象的豆瓣 ID，示例如下
+```
+http://127.0.0.1:8000/douban/item_analysis_query/?douban_type=1&dad_id=1291561
 ```
