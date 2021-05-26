@@ -14,22 +14,22 @@ class ItemAnalysis(models.Model):
     dad_type = models.IntegerField(choices=ITEM_TYPE, default=1)  # 分析对象的类型，区分电影、图书
 
     # 除分析对象的 id 外，其余数据由系统自动生成
-    comment_num = models.IntegerField()  # 热评样本数量
-    pos_num = models.IntegerField()  # 正面评论数量
-    neg_num = models.IntegerField()  # 负面评论数量
+    comment_num = models.IntegerField(null=True, blank=True)  # 热评样本数量
+    pos_num = models.IntegerField(null=True, blank=True)  # 正面评论数量
+    neg_num = models.IntegerField(null=True, blank=True)  # 负面评论数量
 
     # figures, 数据库存 json 转字符串
-    stars_data = models.TextField()  # 1-5 星评分情况，绘制柱形图
-    pos_neg_sum = models.TextField()  # 正负面评论总数，绘制柱形图（横向）
-    pos_neg_per_month = models.TextField()  # 各月份的正负面评论数量，绘制柱形图
-    pos_neg_sum_month = models.TextField()  # 正负面评论数量走势，绘制折线图
-    emotion_percent = models.TextField()  # 喜怒哀乐等情绪占比，饼状图
+    stars_data = models.TextField(null=True, blank=True)  # 1-5 星评分情况，绘制柱形图
+    pos_neg_sum = models.TextField(null=True, blank=True)  # 正负面评论总数，绘制柱形图（横向）
+    pos_neg_per_month = models.TextField(null=True, blank=True)  # 各月份的正负面评论数量，绘制柱形图
+    pos_neg_sum_month = models.TextField(null=True, blank=True)  # 正负面评论数量走势，绘制折线图
+    emotion_percent = models.TextField(null=True, blank=True)  # 喜怒哀乐等情绪占比，饼状图
 
     # 分析时间
     create_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return '<Analysis: %s, date: %s>' % (
+        return '<ItemAnalysis: %s, date: %s>' % (
             self.dad_id,
             datetime.strftime(self.create_date, '%Y-%m-%d %H:%M:%S')
         )

@@ -30,13 +30,15 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         item = ItemAnalysis.objects.create(**validated_data)
         item_type = ITEM_TYPE[item.dad_type]
         if item_type == 'movie':
-            movieitem = Movie.objects.get(id=item.dad_id)
+            pass
+            # movieitem = Movie.objects.get(id=item.dad_id)
+            # print(movieitem)
             # item.comment_num = 100
             # item.neg_num = 91
             # item.pos_num = 9
             # item.emotion_percent = movieitem.actor
             # item.pos_neg_sum = movieitem.director
-            item.save()
+            # item.save()
         elif item_type == 'book':
             pass
 

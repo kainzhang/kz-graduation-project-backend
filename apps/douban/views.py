@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets, filters, generics
 
 from apps.douban.models import ItemAnalysis, Movie, Book, Comment
@@ -7,6 +8,27 @@ from apps.douban.serializers import ItemAnalysisSerializer, MovieSerializer, Boo
 class ItemAnalysisViewSet(viewsets.ModelViewSet):
     queryset = ItemAnalysis.objects.all()
     serializer_class = ItemAnalysisSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['create_date', 'id']
+    ordering = ['create_date']
+
+
+class ItemAnalysisQuery(generics.ListAPIView):
+    serializer_class = ItemAnalysisSerializer
+
+    def get_queryset(self):
+        dad_id = self.request.query_params.get('dad_id', None)
+        douban_type = self.request.query_params.get('douban_type', 0)
+        if dad_id is not None and douban_type != 0:
+            queryset = ItemAnalysis.objects.filter(Q(dad_id__exact=dad_id) & Q(dad_type__exact=douban_type))
+        elif dad_id is None and douban_type == 0:
+            queryset = ItemAnalysis.objects.all()
+        elif douban_type != 0:
+            queryset = ItemAnalysis.objects.filter(dad_type__exact=douban_type)
+        else:
+            queryset = ItemAnalysis.objects.filter(dad_id__exact=dad_id)
+
+        return queryset.order_by('-create_date')
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -26,13 +48,24 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.filter()
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
 
-class CommentList(generics.ListAPIView):
+class CommentQuery(generics.ListAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
         dad_id = self.request.query_params.get('dad_id', None)
-        return Comment.objects.filter(dad_id__exact=dad_id)
+        douban_type = self.request.query_params.get('douban_type', 0)
+
+        if dad_id is not None and douban_type != 0:
+            queryset = Comment.objects.filter(Q(dad_id__exact=dad_id) & Q(comment_type__exact=douban_type))
+        elif dad_id is None and douban_type == 0:
+            queryset = Comment.objects.all()
+        elif douban_type != 0:
+            queryset = Comment.objects.filter(comment_type__exact=douban_type)
+        else:
+            queryset = Comment.objects.filter(dad_id__exact=dad_id)
+
+        return queryset
