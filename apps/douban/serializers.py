@@ -1,11 +1,11 @@
 import re
+from datetime import datetime
 
+from django.db.models import Q
 from rest_framework import serializers
 
-from apps.douban.models import Movie, Book, Comment, ItemAnalysis
 from apps.douban.crawl import crawl_item
-
-from snownlp import SnowNLP
+from apps.douban.models import Movie, Book, Comment, ItemAnalysis
 
 
 class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,28 +25,95 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def create(self, validated_data):
-        ITEM_TYPE = {
-            1: 'movie',
-            2: 'book'
-        }
         item = ItemAnalysis.objects.create(**validated_data)
-        item_type = ITEM_TYPE[item.dad_type]
-        if item_type == 'movie':
-            pass
-            # comments = Comment.objects.filter(dad_id__exact=item.dad_id)
-            # for comment in comments:
-            #     comment.senti_score = SnowNLP(comment.content).sentiments
-            #     comment.save()
-            # movieitem = Movie.objects.get(id=item.dad_id)
-            # item.comment_num = 100
-            # item.neg_num = 91
-            # item.pos_num = 9
-            # item.emotion_percent = movieitem.actor
-            # item.pos_neg_sum = movieitem.director
-            # item.save()
-        elif item_type == 'book':
-            pass
+        comments = Comment.objects.filter(Q(dad_id__exact=item.dad_id) & Q(comment_type=item.dad_type))
 
+        dict_stars = {'50': 0, '40': 0, '30': 0, '20': 0, '10': 0}  # 评论星级
+        dict_senti_year = {}
+        li_pos = []  # 正面评论
+        li_neu = []  # 中立评论
+        li_neg = []  # 负面评论
+        li_year = []  # 涉及的年份
+        senti_score_sum = 0  # 总情感分数
+
+        for comment in comments:
+            # 统计星级
+            if comment.rating_val != '-t':
+                dict_stars[comment.rating_val] += 1
+
+            senti_score_sum += comment.senti_score
+
+            senti_flag = 0
+            # 统计正面、中立、负面分数
+            if comment.senti_score > 0.8:
+                li_pos.append(comment)
+                senti_flag = 1
+            elif comment.senti_score < 0.3:
+                li_neg.append(comment)
+                senti_flag = -1
+            else:
+                li_neu.append(comment)
+
+            # 每年的三类评论数量
+            pub_year = datetime.strftime(comment.pub_date, '%Y')
+            if pub_year not in dict_senti_year:
+                li_year.append(pub_year)
+                dict_senti_year[pub_year] = {'pos': 0, 'neu': 0, 'neg': 0}
+            if senti_flag == 1:
+                dict_senti_year[pub_year]['pos'] += 1
+            elif senti_flag == -1:
+                dict_senti_year[pub_year]['neg'] += 1
+            else:
+                dict_senti_year[pub_year]['neu'] += 1
+
+        item.comment_num = len(comments)  # 评论总数
+        item.pos_num = len(li_pos)  # 正面评论总数
+        item.neu_num = len(li_neu)  # 中立评论总数
+        item.neg_num = len(li_neg)  # 负面评论总数
+        item.pos_rate = senti_score_sum / item.comment_num  # 情感正向比率
+        item.senti_sum = {'type': ['pos', 'neu', 'neg'], 'val': [item.pos_num, item.neu_num, item.neg_num]}
+
+        # 评分星级分布，柱状图
+        item.stars_data = str(dict_stars)
+
+        tmp_pos = []
+        tmp_neu = []
+        tmp_neg = []
+        tmp_sum_pos = []
+        tmp_sum_neu = []
+        tmp_sum_neg = []
+        li_year = sorted(li_year)
+        for li in li_year:
+            tmp_pos.append(dict_senti_year[li]['pos'])
+            if len(tmp_sum_pos) == 0:
+                tmp_sum_pos.append(dict_senti_year[li]['pos'])
+            else:
+                tmp_sum_pos.append(tmp_sum_pos[-1] + dict_senti_year[li]['pos'])
+
+            tmp_neu.append(dict_senti_year[li]['neu'])
+            if len(tmp_sum_neu) == 0:
+                tmp_sum_neu.append(dict_senti_year[li]['neu'])
+            else:
+                tmp_sum_neu.append(tmp_sum_neu[-1] + dict_senti_year[li]['neu'])
+
+            tmp_neg.append(dict_senti_year[li]['neg'])
+            if len(tmp_sum_neg) == 0:
+                tmp_sum_neg.append(dict_senti_year[li]['neg'])
+            else:
+                tmp_sum_neg.append(tmp_sum_neg[-1] + dict_senti_year[li]['neg'])
+
+        # 每年各类评论发布数量，堆叠条形图
+        item.senti_per_year = {'years': li_year, 'pos': tmp_pos, 'neu': tmp_neu, 'neg': tmp_neg}
+        # 每年各类评论总数量，基础平滑折线图
+        item.senti_sum_year = {'years': li_year, 'pos': tmp_sum_pos, 'neu': tmp_sum_neu, 'neg': tmp_sum_neg}
+
+        print(item.stars_data)
+        print(item.neu_num)
+        print(item.pos_rate)
+        print(item.senti_sum)
+        print(item.senti_per_year)
+        print(item.senti_sum_year)
+        item.save()
         return item
 
 
