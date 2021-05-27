@@ -146,10 +146,12 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         douban_id = re.sub(r'\D', "", validated_data['douban_url'])
-        item = Movie.objects.create(
-            id=douban_id,
-            douban_url=validated_data['douban_url']
-        )
+        item = Movie.objects.filter(id=douban_id).first()
+        if item is None:
+            item = Movie.objects.create(
+                id=douban_id,
+                douban_url=validated_data['douban_url']
+            )
         crawl_item('movie', douban_id)
         return item
 
@@ -184,10 +186,12 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         douban_id = re.sub(r'\D', "", validated_data['douban_url'])
-        item = Book.objects.create(
-            id=douban_id,
-            douban_url=validated_data['douban_url']
-        )
+        item = Book.objects.filter(id=douban_id).first()
+        if item is None:
+            item = Book.objects.create(
+                id=douban_id,
+                douban_url=validated_data['douban_url']
+            )
         crawl_item('book', douban_id)
         return item
 
