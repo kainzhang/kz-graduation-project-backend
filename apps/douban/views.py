@@ -8,9 +8,10 @@ from apps.douban.serializers import ItemAnalysisSerializer, MovieSerializer, Boo
 class ItemAnalysisViewSet(viewsets.ModelViewSet):
     queryset = ItemAnalysis.objects.all()
     serializer_class = ItemAnalysisSerializer
-    filter_backends = [filters.OrderingFilter]
-    ordering_fields = ['create_date', 'id']
-    ordering = ['create_date']
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['create_date']
+    ordering = ['-create_date']
+    search_fields = ['=dad_id']
 
 
 class ItemAnalysisQuery(generics.ListAPIView):
@@ -34,22 +35,26 @@ class ItemAnalysisQuery(generics.ListAPIView):
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['create_date', 'id']
-    ordering = ['create_date']
+    ordering = ['-create_date']
+    search_fields = ['name', 'actor', 'director', 'genre']
 
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['create_date', 'id']
-    ordering = ['create_date']
+    ordering = ['-create_date']
+    search_fields = ['name', 'author']
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['=dad_id']
 
 
 class CommentQuery(generics.ListAPIView):

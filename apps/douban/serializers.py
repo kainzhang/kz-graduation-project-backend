@@ -145,14 +145,17 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def create(self, validated_data):
-        douban_id = re.sub(r'\D', "", validated_data['douban_url'])
+        # 提取豆瓣 ID
+        douban_id = re.sub(r'\D', '', validated_data['douban_url'])
+        # 查询数据库是否存在对应的数据
         item = Movie.objects.filter(id=douban_id).first()
         if item is None:
+            # 对象不存在则创建
             item = Movie.objects.create(
                 id=douban_id,
                 douban_url=validated_data['douban_url']
             )
-        crawl_item('movie', douban_id)
+        crawl_item('movie', douban_id)  # 发送爬虫请求
         return item
 
 
@@ -185,7 +188,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def create(self, validated_data):
-        douban_id = re.sub(r'\D', "", validated_data['douban_url'])
+        douban_id = re.sub(r'\D', '', validated_data['douban_url'])
         item = Book.objects.filter(id=douban_id).first()
         if item is None:
             item = Book.objects.create(

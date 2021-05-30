@@ -23,7 +23,7 @@ class ItemAnalysis(models.Model):
     # figures, 数据库存 json 转字符串
     stars_data = models.TextField(null=True, blank=True)  # 1-5 星评分情况，绘制柱形图
     senti_sum = models.TextField(null=True, blank=True)  # 三种类型评论总数，绘制柱形图（横向）
-    senti_per_year = models.TextField(null=True, blank=True)  # 各月份的三种类型评论数量，堆叠条形图
+    senti_per_year = models.TextField(null=True, blank=True)  # 各年份的三种类型评论数量，堆叠条形图
     senti_sum_year = models.TextField(null=True, blank=True)  # 三种类型评论数量走势，绘制折线图
     word_cloud = models.TextField(null=True, blank=True)  # 词云
 
