@@ -38,7 +38,7 @@ class MovieViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['create_date', 'id']
     ordering = ['-create_date']
-    search_fields = ['name', 'actor', 'director', 'genre']
+    search_fields = ['=id', 'name', 'actor', 'director', 'genre']
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -47,7 +47,7 @@ class BookViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['create_date', 'id']
     ordering = ['-create_date']
-    search_fields = ['name', 'author']
+    search_fields = ['=id', 'name', 'author']
 
 
 class CommentViewSet(viewsets.ModelViewSet):
