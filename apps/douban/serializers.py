@@ -15,12 +15,13 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'comment_num': {'read_only': True},  # 热评样本数量
             'pos_num': {'read_only': True},  # 正面评论数量
+            'neu_num': {'read_only': True},  # 中立评论数量
             'neg_num': {'read_only': True},  # 负面评论数量
-            'stars_data': {'read_only': True},  # 1-5 星评分情况，绘制柱形图
-            'pos_neg_sum': {'read_only': True},  # 正负面评论总数，绘制柱形图（横向）
-            'pos_neg_per_month': {'read_only': True},  # 各月份的正负面评论数量，绘制柱形图
-            'pos_neg_sum_month': {'read_only': True},  # 正负面评论数量走势，绘制折线图
-            'emotion_percent': {'read_only': True},  # 喜怒哀乐等情绪占比，饼状图
+            'stars_cnt': {'read_only': True},  # 1-5 星评分情况，绘制柱形图
+            'senti_num': {'read_only': True},  # 各类评论总数，绘制柱形图（横向）
+            'senti_per_year': {'read_only': True},  # 每年各类评论的发布量，绘制柱形图
+            'senti_sum_year': {'read_only': True},  # 每年各类型评论的总量，绘制折线图
+            'word_cloud': {'read_only': True},  # 词云
             'create_date': {'read_only': True}
         }
 
@@ -71,10 +72,13 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         item.neu_num = len(li_neu)  # 中立评论总数
         item.neg_num = len(li_neg)  # 负面评论总数
         item.pos_rate = senti_score_sum / item.comment_num  # 情感正向比率
-        item.senti_sum = {'type': ['pos', 'neu', 'neg'], 'val': [item.pos_num, item.neu_num, item.neg_num]}
+        item.senti_num = {'type': ['pos', 'neu', 'neg'], 'val': [item.pos_num, item.neu_num, item.neg_num]}
 
         # 评分星级分布，柱状图
-        item.stars_data = str(dict_stars)
+        item.stars_cnt = str({
+            'stars': ['1-Star', '2-Star', '3-Star', '4-Star', '5-Star'],
+            'val': [dict_stars['10'], dict_stars['20'], dict_stars['30'], dict_stars['40'], dict_stars['50']]
+        })
 
         tmp_pos = []
         tmp_neu = []
@@ -107,10 +111,18 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         # 每年各类评论总数量，基础平滑折线图
         item.senti_sum_year = {'years': li_year, 'pos': tmp_sum_pos, 'neu': tmp_sum_neu, 'neg': tmp_sum_neg}
 
-        print(item.stars_data)
+        """
+        适配 JSON，修改单引号为双引号
+        """
+        item.stars_cnt = str(item.stars_cnt).replace("'", '"')
+        item.senti_num = str(item.senti_num).replace("'", '"')
+        item.senti_per_year = str(item.senti_per_year).replace("'", '"')
+        item.senti_sum_year = str(item.senti_sum_year).replace("'", '"')
+
+        print(item.stars_cnt)
         print(item.neu_num)
         print(item.pos_rate)
-        print(item.senti_sum)
+        print(item.senti_num)
         print(item.senti_per_year)
         print(item.senti_sum_year)
         item.save()
