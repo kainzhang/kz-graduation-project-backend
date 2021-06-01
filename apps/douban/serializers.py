@@ -11,7 +11,8 @@ from apps.douban.models import Movie, Book, Comment, ItemAnalysis
 class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ItemAnalysis
-        fields = '__all__'
+        fields = ['url', 'id', 'dad_id', 'dad_type', 'comment_num', 'pos_num', 'neu_num', 'neg_num', 'pos_rate',
+                  'stars_cnt', 'senti_num', 'senti_per_year', 'senti_sum_year', 'word_cloud', 'create_date']
         extra_kwargs = {
             'comment_num': {'read_only': True},  # 热评样本数量
             'pos_num': {'read_only': True},  # 正面评论数量
@@ -132,7 +133,9 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
 class MovieSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Movie
-        fields = '__all__'
+        fields = ['url', 'id', 'name', 'image', 'douban_url', 'pub_date', 'duration', 'imdb', 'description',
+                  'rating_val', 'stars5', 'stars4', 'stars3', 'stars2', 'stars1', 'genre', 'director', 'author',
+                  'actor', 'region', 'language', 'alias', 'create_date']
         extra_kwargs = {
             'name': {'read_only': True},
             'image': {'read_only': True},
@@ -174,7 +177,9 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ['url', 'id', 'name', 'image', 'douban_url', 'pub_date', 'isbn', 'press', 'producer', 'subtitle',
+                  'original_title', 'paginal_num', 'price', 'binding', 'series', 'rating_val', 'stars5', 'stars4',
+                  'stars3', 'stars2', 'stars1', 'author', 'translator', 'create_date']
         extra_kwargs = {
             'name': {'read_only': True},
             'image': {'read_only': True},
@@ -214,4 +219,5 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ['url', 'id', 'comment_type', 'dad_id', 'author', 'author_url', 'rating_val', 'pub_date', 'content',
+                  'senti_score']

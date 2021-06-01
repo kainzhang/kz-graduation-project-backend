@@ -10,8 +10,8 @@ def crawl_item(douban_type, douban_id):
         'douban_id': douban_id
     }
     response = requests.post(url=url, data=params)
-    print(response.json())
     crawl_comment(douban_type, douban_id)
+    print(response.json())
 
 
 # 爬豆瓣电影、图书的热评
