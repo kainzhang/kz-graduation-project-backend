@@ -82,6 +82,9 @@ class DoubanCommentSpider(scrapy.Spider):
 
         elif self.item_type == 'book':
             comment_list = response.xpath('//div[@id="comments"]//li[@class="comment-item"]')
+            if len(comment_list) == 0:
+                return
+
             for comment in comment_list:
                 item = DoubanCommentItem()
                 item['id'] = comment.xpath('@data-cid').extract_first()

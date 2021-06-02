@@ -18,6 +18,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
             'pos_num': {'read_only': True},  # 正面评论数量
             'neu_num': {'read_only': True},  # 中立评论数量
             'neg_num': {'read_only': True},  # 负面评论数量
+            'pos_rate': {'read_only': True},  # 正面情感率
             'stars_cnt': {'read_only': True},  # 1-5 星评分情况，绘制柱形图
             'senti_num': {'read_only': True},  # 各类评论总数，绘制柱形图（横向）
             'senti_per_year': {'read_only': True},  # 每年各类评论的发布量，绘制柱形图
@@ -40,7 +41,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
 
         for comment in comments:
             # 统计星级
-            if comment.rating_val != '-t':
+            if comment.rating_val != '-t' and comment.rating_val != '':
                 dict_stars[comment.rating_val] += 1
 
             senti_score_sum += comment.senti_score
@@ -137,6 +138,7 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
                   'rating_val', 'stars5', 'stars4', 'stars3', 'stars2', 'stars1', 'genre', 'director', 'author',
                   'actor', 'region', 'language', 'alias', 'create_date']
         extra_kwargs = {
+            'id': {'read_only': True},
             'name': {'read_only': True},
             'image': {'read_only': True},
             'pub_date': {'read_only': True},
@@ -181,6 +183,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
                   'original_title', 'paginal_num', 'price', 'binding', 'series', 'rating_val', 'stars5', 'stars4',
                   'stars3', 'stars2', 'stars1', 'author', 'translator', 'create_date']
         extra_kwargs = {
+            'id': {'read_only': True},
             'name': {'read_only': True},
             'image': {'read_only': True},
             'pub_date': {'read_only': True},
