@@ -21,3 +21,7 @@ class BookAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'comment_type', 'dad_id', 'pub_date')
+
+
+admin.site.site_title = "ZJ Admin"
+admin.site.site_header = "ZJ's Graduation Project admin"

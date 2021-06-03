@@ -128,6 +128,16 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         print(item.senti_per_year)
         print(item.senti_sum_year)
         item.save()
+
+        if item.dad_type == 1:
+            movie_item = Movie.objects.get(id__exact=item.dad_id)
+            movie_item.analyzed = True
+            movie_item.save()
+        elif item.dad_type == 2:
+            book_item = Book.objects.get(id__exact=item.dad_id)
+            book_item.analyzed = True
+            book_item.save()
+
         return item
 
 
@@ -136,7 +146,7 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
         model = Movie
         fields = ['url', 'id', 'name', 'image', 'douban_url', 'pub_date', 'duration', 'imdb', 'description',
                   'rating_val', 'stars5', 'stars4', 'stars3', 'stars2', 'stars1', 'genre', 'director', 'author',
-                  'actor', 'region', 'language', 'alias', 'create_date']
+                  'actor', 'region', 'language', 'alias', 'create_date', 'analyzed']
         extra_kwargs = {
             'id': {'read_only': True},
             'name': {'read_only': True},
@@ -158,7 +168,8 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
             'region': {'read_only': True},
             'language': {'read_only': True},
             'alias': {'read_only': True},
-            'create_date': {'read_only': True}
+            'create_date': {'read_only': True},
+            'analyzed': {'read_only': True}
         }
 
     def create(self, validated_data):
@@ -181,7 +192,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
         model = Book
         fields = ['url', 'id', 'name', 'image', 'douban_url', 'pub_date', 'isbn', 'press', 'producer', 'subtitle',
                   'original_title', 'paginal_num', 'price', 'binding', 'series', 'rating_val', 'stars5', 'stars4',
-                  'stars3', 'stars2', 'stars1', 'author', 'translator', 'create_date']
+                  'stars3', 'stars2', 'stars1', 'author', 'translator', 'create_date', 'analyzed']
         extra_kwargs = {
             'id': {'read_only': True},
             'name': {'read_only': True},
@@ -205,6 +216,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
             'author': {'read_only': True},
             'translator': {'read_only': True},
             'create_date': {'read_only': True},
+            'analyzed': {'read_only': True},
         }
 
     def create(self, validated_data):

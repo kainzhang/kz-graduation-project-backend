@@ -66,6 +66,9 @@ class Movie(models.Model):
     # 创建时间（信息爬取时间）
     create_date = models.DateTimeField(default=timezone.now)
 
+    # 已分析（存在分析即为 True）
+    analyzed = models.BooleanField(default=False)
+
     def __str__(self):
         return '<Movie: %s, id: %s>' % (self.name, self.id)
 
@@ -99,6 +102,9 @@ class Book(models.Model):
 
     # 创建时间（信息爬取时间）
     create_date = models.DateTimeField(default=timezone.now)
+
+    # 已分析（存在分析即为 True）
+    analyzed = models.BooleanField(default=False)
 
     def __str__(self):
         return '<Book: %s, id: %s>' % (self.name, self.id)

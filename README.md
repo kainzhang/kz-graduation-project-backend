@@ -46,7 +46,6 @@ pip install pandas
 在项目根目录执行以下指令
 ```
 python manage.py makemigrations
-python manage.py migrate
 python manage.py runserver
 
 # 创建超级用户
