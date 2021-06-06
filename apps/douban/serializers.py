@@ -48,10 +48,10 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
 
             senti_flag = 0
             # 统计正面、中立、负面分数
-            if comment.senti_score > 0.8:
+            if comment.senti_score >= 0.8:
                 li_pos.append(comment)
                 senti_flag = 1
-            elif comment.senti_score < 0.3:
+            elif comment.senti_score < 0.4:
                 li_neg.append(comment)
                 senti_flag = -1
             else:

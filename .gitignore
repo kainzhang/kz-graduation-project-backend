@@ -1,6 +1,7 @@
 .idea
-crawler/logs/*
+crawler/logs/
 crawler/twistd.pid
-crawler/dbs
+crawler/dbs/
+crawler/crawler/captcha_img/
 venv
 .DS_Store

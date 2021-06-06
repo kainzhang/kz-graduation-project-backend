@@ -6,8 +6,10 @@
 + django 2.2
 + django-cors-headers
 + djangorestframework
++ djangorestframework-jwt
 + djongo
 + pillow
++ pymongo
 + requests
 + scrapy
 + scrapy-djangoitem
