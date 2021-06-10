@@ -1,8 +1,11 @@
 # Graduation Project Backend [![license][license-badge]][LICENSE]
 
-> 毕业设计前端仓库（影视与文学作品热评情感分析系统）
+> 毕业设计后端仓库（影视与文学作品热评情感分析系统）
 
-后端仓库传送门: [Graduation Project Frontend](https://github.com/kainzhang/kz-graduation-project-frontend)
+基于豆瓣电影和豆瓣读书的热评情感分析系统，从豆瓣网爬取指定的电影和图书信息，及其热门短评。能够对短评内容进行情感分析，统计正面、负面和中立评论的数量，
+将数据使用可视化图表呈现给用户。
+
+前端仓库传送门: [Graduation Project Frontend](https://github.com/kainzhang/kz-graduation-project-frontend)
 
 **主要依赖：**
 + django 2.2
@@ -94,7 +97,7 @@ scrapyd-deploy -l
 默认运行地址：[http://localhost:6800/
 ](http://localhost:6800/)
 
-## :octocat: 豆瓣热门短评爬虫
+## :bug: 豆瓣热门短评爬虫
 热门短评由于豆瓣官方限制，不登录账号最多爬 220 条，登录后最多爬 500 条，由于热度动态改变，可能爬不满 220 或 500，以豆瓣官方 id 作为主键，数据库不会出现重复数据<br>
 
 用户登录需要填写个人用户名和密码，运行爬虫时会弹出登录页面，能够自动模拟鼠标拖拽完成登录验证，不登录或验证失败按未登录爬取数据<br>
