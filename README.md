@@ -1,6 +1,8 @@
-# Graduation Project Backend
+# Graduation Project Backend [![license][license-badge]][LICENSE]
 
-毕业设计采用前后端分离的开发方式，本仓库为后端部分，使用 Rest Framework 做后端接口。
+> 毕业设计前端仓库（影视与文学作品热评情感分析系统）
+
+后端仓库传送门: [Graduation Project Frontend](https://github.com/kainzhang/kz-graduation-project-frontend)
 
 **主要依赖：**
 + django 2.2
@@ -27,7 +29,7 @@
 3. 爬取豆瓣评论需要在 `crawler/crawler/userinfo.json` 添加账号密码
 4. scrapy-deploy 文件的修改问题
 
-## 🚀 安装依赖
+## :rocket: Getting started
 安装 Poetry：osx / linux / bashonwindows，详情查看 [Poetry Docs](https://python-poetry.org/docs/)
 ```
 curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
@@ -41,9 +43,6 @@ poetry install
 pip install snownlp
 pip install pandas
 ```
-
-## 🏄 运行流程
-
 ### Django 运行
 在项目根目录执行以下指令
 ```
@@ -55,9 +54,10 @@ python manage.py createsuperuser
 ```
 
 **相关地址：**
-+ douban api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
-+ user api: [http://localhost:8000/user/](http://localhost:8000/user/)
-+ django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
++ Douban Api: [http://localhost:8000/douban/](http://localhost:8000/douban/)
++ User Api: [http://localhost:8000/user/](http://localhost:8000/user/)
++ JWT Api: [http://localhost:8000/api-token-auth/](http://localhost:8000/api-token-auth/)
++ Django admin: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
 ### Scrapy 爬虫
 
@@ -94,12 +94,12 @@ scrapyd-deploy -l
 默认运行地址：[http://localhost:6800/
 ](http://localhost:6800/)
 
-#### 🕷️ 豆瓣热门短评爬虫
+## :octocat: 豆瓣热门短评爬虫
 热门短评由于豆瓣官方限制，不登录账号最多爬 220 条，登录后最多爬 500 条，由于热度动态改变，可能爬不满 220 或 500，以豆瓣官方 id 作为主键，数据库不会出现重复数据<br>
 
 用户登录需要填写个人用户名和密码，运行爬虫时会弹出登录页面，能够自动模拟鼠标拖拽完成登录验证，不登录或验证失败按未登录爬取数据<br>
 
-豆瓣热门短评爬虫包括豆瓣电影和读书的热门短评爬取，为区分内容，为 spider 添加了两个参数，分别为评论类型和评论对象的 id，指令示例如下
+豆瓣热门短评爬虫包括豆瓣电影和读书的热门短评爬取，为区分内容，为 spider 添加了两个参数，分别为评论类型和评论对象的 id，终端指令示例如下
 
 ```
 # 豆瓣电影参数为 movie，数据库存储数据为 1
@@ -109,13 +109,6 @@ scrapy crawl douban-comment -a douban_type=movie -a douban_id=1292052
 scrapy crawl douban-comment -a douban_type=book -a douban_id=6082808
 ```
 
-## 🌳 Rest Framework
 
-评论查询，参数为评论对象的类型和评论对象的豆瓣 ID，示例如下
-```
-http://127.0.0.1:8000/douban/comment_query/?douban_type=1&dad_id=34418203
-```
-分析结果查询，参数为分析对象类型和分析对象的豆瓣 ID，示例如下
-```
-http://127.0.0.1:8000/douban/item_analysis_query/?douban_type=1&dad_id=1291561
-```
+[LICENSE]: ./LICENSE
+[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
