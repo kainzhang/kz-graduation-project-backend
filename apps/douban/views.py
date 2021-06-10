@@ -6,7 +6,7 @@ from apps.douban.serializers import ItemAnalysisSerializer, MovieSerializer, Boo
 
 
 class ItemAnalysisViewSet(viewsets.ModelViewSet):
-    # permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
     queryset = ItemAnalysis.objects.all()
     serializer_class = ItemAnalysisSerializer
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
@@ -34,7 +34,7 @@ class ItemAnalysisViewSet(viewsets.ModelViewSet):
 
 
 class MovieViewSet(viewsets.ModelViewSet):
-    # permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
@@ -44,7 +44,7 @@ class MovieViewSet(viewsets.ModelViewSet):
 
 
 class BookViewSet(viewsets.ModelViewSet):
-    # permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
@@ -54,10 +54,12 @@ class BookViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    # permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id']
+    ordering = ['id']
     search_fields = ['=dad_id']
 
 

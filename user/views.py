@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
+from rest_framework import serializers, viewsets, filters, permissions
 
 
 # Create your views here.
@@ -25,5 +25,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.IsAuthenticated, permissions.DjangoModelPermissions)
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['id']
+    ordering = ['id']
+    search_fields = ['=username']
