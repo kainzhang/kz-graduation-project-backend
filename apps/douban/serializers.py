@@ -14,7 +14,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ItemAnalysis
         fields = ['url', 'id', 'dad_id', 'dad_type', 'comment_num', 'pos_num', 'neu_num', 'neg_num', 'pos_rate',
-                  'stars_cnt', 'senti_num', 'senti_per_year', 'senti_sum_year', 'word_cloud', 'create_date']
+                  'stars_cnt', 'senti_num', 'senti_per_year', 'senti_sum_year', 'senti_score_map', 'word_cloud', 'create_date']
         extra_kwargs = {
             'comment_num': {'read_only': True},  # 热评样本数量
             'pos_num': {'read_only': True},  # 正面评论数量
@@ -25,6 +25,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
             'senti_num': {'read_only': True},  # 各类评论总数，绘制柱形图（横向）
             'senti_per_year': {'read_only': True},  # 每年各类评论的发布量，绘制柱形图
             'senti_sum_year': {'read_only': True},  # 每年各类型评论的总量，绘制折线图
+            'senti_score_map': {'read_only': True},  # 情感分数分布
             'word_cloud': {'read_only': True},  # 词云
             'create_date': {'read_only': True}
         }
@@ -40,6 +41,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         li_neg = []  # 负面评论
         li_year = []  # 涉及的年份
         senti_score_sum = 0  # 总情感分数
+        dict_senti_score = {}
 
         for comment in comments:
             # 统计星级
@@ -47,6 +49,13 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
                 dict_stars[comment.rating_val] += 1
 
             senti_score_sum += comment.senti_score
+
+            tmp_score = round(comment.senti_score, 2)
+            tmp_key_num = str(int(tmp_score / 0.02) * 0.02)
+            if str(tmp_key_num) not in dict_senti_score:
+                dict_senti_score[str(tmp_key_num)] = 1
+            else:
+                dict_senti_score[str(tmp_key_num)] += 1
 
             senti_flag = 0
             # 统计正面、中立、负面分数
@@ -141,6 +150,7 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         item.senti_num = str(item.senti_num).replace("'", '"')
         item.senti_per_year = str(item.senti_per_year).replace("'", '"')
         item.senti_sum_year = str(item.senti_sum_year).replace("'", '"')
+        item.senti_score_map = str(dict_senti_score).replace("'", '"')
         item.word_cloud = str(word_dict).replace("'", '"')
 
         # print(item.stars_cnt)
