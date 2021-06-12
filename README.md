@@ -13,6 +13,7 @@
 + djangorestframework
 + djangorestframework-jwt
 + djongo
++ jieba
 + pillow
 + pymongo
 + requests
@@ -85,7 +86,7 @@ from scrapy.utils.http import basic_auth_header
 from scrapy.utils.python import retry_on_eintr
 from scrapy.utils.conf import get_config, closest_scrapy_cfg
 ```
-⬆️ 以上第二行修改为
+:arrow_up: 以上第二行修改为
 ```
 from w3lib.http import basic_auth_header
 ```

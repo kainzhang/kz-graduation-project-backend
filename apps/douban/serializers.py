@@ -1,6 +1,8 @@
 import re
+from collections import Counter
 from datetime import datetime
 
+import jieba
 from django.db.models import Q
 from rest_framework import serializers
 
@@ -113,6 +115,25 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         # 每年各类评论总数量，基础平滑折线图
         item.senti_sum_year = {'years': li_year, 'pos': tmp_sum_pos, 'neu': tmp_sum_neu, 'neg': tmp_sum_neg}
 
+        # 词云
+        if item.pos_rate >= 0.6:
+            comment_list = li_pos
+        else:
+            comment_list = li_neg
+
+        stop_words = [line.strip() for line in open('data/stopwords.txt', encoding='utf-8').readlines()]
+        pattern = re.compile('[^\u4e00-\u9fa5]')
+        word_list = []
+        for comment in comment_list:
+            words = jieba.cut(pattern.sub('', comment.content))
+            for word in words:
+                if word not in stop_words:
+                    word_list.append(word)
+
+        word_cnt = Counter(word_list)
+        word_dict = dict(word_cnt.most_common(100))
+
+
         """
         适配 JSON，修改单引号为双引号
         """
@@ -120,13 +141,15 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         item.senti_num = str(item.senti_num).replace("'", '"')
         item.senti_per_year = str(item.senti_per_year).replace("'", '"')
         item.senti_sum_year = str(item.senti_sum_year).replace("'", '"')
+        item.word_cloud = str(word_dict).replace("'", '"')
 
-        print(item.stars_cnt)
-        print(item.neu_num)
-        print(item.pos_rate)
-        print(item.senti_num)
-        print(item.senti_per_year)
-        print(item.senti_sum_year)
+        # print(item.stars_cnt)
+        # print(item.neu_num)
+        # print(item.pos_rate)
+        # print(item.senti_num)
+        # print(item.senti_per_year)
+        # print(item.senti_sum_year)
+        # print(item.word_cloud)
         item.save()
 
         if item.dad_type == 1:

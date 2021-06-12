@@ -153,3 +153,5 @@ JWT_AUTH = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
 MEDIA_URL = '/media/'
+
+os.path.join(BASE_DIR, 'data')
