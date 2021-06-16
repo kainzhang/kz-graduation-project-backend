@@ -17,7 +17,7 @@ class DoubanCommentSpider(scrapy.Spider):
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
             'crawler.middlewares.CrawlerDownloaderMiddleware': 400,
-            'crawler.middlewares.DoubanSeleniumMiddleware': 500,
+            'crawler.middlewares.DoubanLoginMiddleware': 500,
             'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
         },
     }
@@ -108,7 +108,7 @@ class DoubanCommentSpider(scrapy.Spider):
             print(nxt_href)
             yield scrapy.Request(
                 self.root_url + nxt_href,
-                meta={'useSelenium': False},
+                meta={'needLogin': False},
                 callback=self.parse_content,
             )
         else:
@@ -121,12 +121,12 @@ class DoubanCommentSpider(scrapy.Spider):
             print('+' * 20 + '去登录了!')
             yield scrapy.Request(
                 self.start_urls[0],
-                meta={'useSelenium': True},
+                meta={'needLogin': True},
                 callback=self.parse_content
             )
         else:
             yield scrapy.Request(
                 self.start_urls[0],
-                meta={'useSelenium': False},
+                meta={'needLogin': False},
                 callback=self.parse_content
             )

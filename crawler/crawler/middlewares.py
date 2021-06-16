@@ -17,11 +17,11 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 # 使用 Selenium 实现手动豆瓣用户登录
-class DoubanSeleniumMiddleware:
+class DoubanLoginMiddleware:
     def process_request(self, request, spider):
         # 判断是否需要使用 Selenium
-        use_selenium = request.meta.get('useSelenium')
-        if use_selenium:
+        need_login = request.meta.get('needLogin')
+        if need_login:
             print('-' * 20 + '正在登录！')
             with open('crawler/userinfo.json', mode='r', encoding='utf-8') as f:
                 user = json.load(f)['douban']
@@ -38,9 +38,9 @@ class DoubanSeleniumMiddleware:
                 spider.browser.find_element_by_xpath('//a[contains(./text(), "登录豆瓣")]').click()
 
                 flag = self.finish_captcha(spider.browser)
-                if not flag:
+                if flag is not True:
                     print('-' * 20 + '登录失败，将开始匿名爬虫')
-                    request.meta['useSelenium'] = False
+                    request.meta['needLogin'] = False
                 else:
                     locator = (By.CLASS_NAME, 'nav-user-account')
                     WebDriverWait(spider.browser, 30).until((EC.presence_of_element_located(locator)))
@@ -51,7 +51,7 @@ class DoubanSeleniumMiddleware:
                 return HtmlResponse(url=request.url, status=500, request=request)
             else:
                 request.cookies = selenium_cookies
-                request.meta['useSelenium'] = False
+                request.meta['needLogin'] = False
 
     def get_img(self, driver):
         # 残缺图片地址
@@ -100,21 +100,27 @@ class DoubanSeleniumMiddleware:
     def get_track(self, distance):
         print(f'distance= {distance}')
         t = 0.2
-        v = 0
+        v = 60
         distance -= 43
         tracks = []
 
         # 减速开始位置
-        mid = 0.6 * distance
+        mid = 0.8 * distance
         s = 0
+        flag = 0
         while s < distance:
             v0 = v
-            a = 30
+            a = 20
             if s > mid:
+                if flag == 0:
+                    v0 = 30
+                    flag = 1
                 a = -3
 
             s0 = v0 * t + 0.5 * a * t * t  # 当前 t 时间的移动距离
             v = v0 + a * t  # 当前速度
+            if s + s0 > distance:
+                s0 = distance - s + 2
             tracks.append((round(s0)))
             s += s0  # 当前位置
         return tracks
@@ -134,7 +140,6 @@ class DoubanSeleniumMiddleware:
             tracks = self.get_track(distance)
 
             block = driver.find_element_by_id('tcaptcha_drag_button')
-
             ActionChains(driver).click_and_hold(block).perform()
             for track in tracks:
                 ActionChains(driver).move_by_offset(track, 0).perform()
