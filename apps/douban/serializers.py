@@ -51,11 +51,11 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
             senti_score_sum += comment.senti_score
 
             tmp_score = round(comment.senti_score, 2)
-            tmp_key_num = str(int(tmp_score / 0.02) * 0.02)
-            if str(tmp_key_num) not in dict_senti_score:
-                dict_senti_score[str(tmp_key_num)] = 1
+            tmp_key_num = str(int(tmp_score / 0.02) * 0.02)[0:4]
+            if tmp_key_num not in dict_senti_score:
+                dict_senti_score[tmp_key_num] = 1
             else:
-                dict_senti_score[str(tmp_key_num)] += 1
+                dict_senti_score[tmp_key_num] += 1
 
             senti_flag = 0
             # 统计正面、中立、负面分数

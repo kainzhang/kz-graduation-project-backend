@@ -9,6 +9,7 @@ import re
 from urllib.request import urlretrieve
 
 import jieba
+from jieba import analyse
 from snownlp import SnowNLP
 
 stop_words = [line.strip() for line in open('../data/stopwords.txt', encoding='utf-8').readlines()]
@@ -29,15 +30,14 @@ class CrawlerPipeline:
             item['senti_score'] = res.sentiments
 
             pattern = re.compile('[^\u4e00-\u9fa5]')
-            content = pattern.sub('', item['content'])
-            words = jieba.cut(content)
+            content_tmp = pattern.sub('', item['content'])
 
-            keywords = res.keywords(10)
+            keywords_raw = analyse.extract_tags(content_tmp)
             keyword_list = []
-            for word in words:
-                if word not in stop_words and word in keywords:
-                    keyword_list.append(word)
-            item['keywords'] = str(keyword_list).replace("'", '"')
+            for keyword in keywords_raw:
+                if keyword not in stop_words:
+                    keyword_list.append(keyword)
+            item['keywords'] = str(keyword_list[0:10]).replace("'", '"')
 
         item.save()
 
