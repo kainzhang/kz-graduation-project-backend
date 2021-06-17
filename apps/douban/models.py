@@ -125,6 +125,7 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(null=True, blank=True)
     content = models.TextField(null=False, blank=False)
     senti_score = models.FloatField(null=True, blank=True)
+    keywords = models.TextField(null=False, blank=False)
 
     def __str__(self):
         return '<Comment type: %s, id: %s, dad: %s>' % (self.get_comment_type_display(), self.id, self.dad_id)

@@ -5,9 +5,13 @@
 
 
 # useful for handling different item types with a single interface
+import re
 from urllib.request import urlretrieve
 
+import jieba
 from snownlp import SnowNLP
+
+stop_words = [line.strip() for line in open('../data/stopwords.txt', encoding='utf-8').readlines()]
 
 
 class CrawlerPipeline:
@@ -21,7 +25,19 @@ class CrawlerPipeline:
 
         elif spider.name == 'douban-comment':
             item['content'] = item['content'].replace('\n', '')
-            item['senti_score'] = SnowNLP(item['content']).sentiments
+            res = SnowNLP(item['content'])
+            item['senti_score'] = res.sentiments
+
+            pattern = re.compile('[^\u4e00-\u9fa5]')
+            content = pattern.sub('', item['content'])
+            words = jieba.cut(content)
+
+            keywords = res.keywords(10)
+            keyword_list = []
+            for word in words:
+                if word not in stop_words and word in keywords:
+                    keyword_list.append(word)
+            item['keywords'] = str(keyword_list).replace("'", '"')
 
         item.save()
 
