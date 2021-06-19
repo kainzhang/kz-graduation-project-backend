@@ -37,7 +37,7 @@ class CrawlerPipeline:
             for keyword in keywords_raw:
                 if keyword not in stop_words:
                     keyword_list.append(keyword)
-            item['keywords'] = str(keyword_list[0:10]).replace("'", '"')
+            item['keywords'] = str(keyword_list[0:5]).replace("'", '"')
 
         item.save()
 

@@ -31,8 +31,13 @@ class ItemAnalysisSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def create(self, validated_data):
-        item = ItemAnalysis.objects.create(**validated_data)
-        comments = Comment.objects.filter(Q(dad_id__exact=item.dad_id) & Q(comment_type=item.dad_type))
+        dad_id = validated_data['dad_id']
+        dad_type = validated_data['dad_type']
+        comments = Comment.objects.filter(Q(dad_id__exact=dad_id) & Q(comment_type=dad_type))
+        if len(comments) > 0:
+            item = ItemAnalysis.objects.create(**validated_data)
+        else:
+            return None
 
         dict_stars = {'50': 0, '40': 0, '30': 0, '20': 0, '10': 0}  # 评论星级
         dict_senti_year = {}
